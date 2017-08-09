@@ -20,16 +20,27 @@ resource "alicloud_security_group" "sg-subnet" {
   vpc_id = "${var.vpc_id}"
 }
 
-#resource "alicloud_security_group_rule" "inbound" {
-#  type              = "ingress"
-#  ip_protocol       = "all"
-#  nic_type          = "intranet"
-#  policy            = "accept"
-#  port_range        = "-1/-1"
-#  priority          = 100
-#  security_group_id = "${alicloud_security_group.sg-subnet.id}"
-#  cidr_ip           = "${var.worker_subnet}"
-#}
+resource "alicloud_security_group_rule" "inbound_ssh" {
+  type              = "ingress"
+  ip_protocol       = "all"
+  nic_type          = "intranet"
+  policy            = "accept"
+  port_range        = "22/22"
+  priority          = 100
+  security_group_id = "${alicloud_security_group.sg-subnet.id}"
+  cidr_ip           = "0.0.0.0/0"
+}
+
+resource "alicloud_security_group_rule" "inbound" {
+  type              = "ingress"
+  ip_protocol       = "all"
+  nic_type          = "intranet"
+  policy            = "accept"
+  port_range        = "-1/-1"
+  priority          = 100
+  security_group_id = "${alicloud_security_group.sg-subnet.id}"
+  cidr_ip           = "${var.subnet}"
+}
 
 resource "alicloud_security_group_rule" "outbound" {
   type              = "egress"
